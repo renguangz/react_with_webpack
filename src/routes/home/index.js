@@ -8,6 +8,7 @@ export default function HomePage() {
         <h1>Hello React</h1>
         <div>
           <Link to="/implements/redux">Redux</Link>
+          <Link to="/implements/promise">Promise</Link>
         </div>
         {/* <BatchUpdateComponent /> */}
         {/* <Eventloop /> */}
