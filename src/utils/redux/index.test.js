@@ -1,5 +1,5 @@
 import { combineReducers } from "./combineReducers";
-import { createStore } from "./store";
+import { createStore, reset } from "./store";
 
 describe("Redux", () => {
   const initialState = { count: 0 };
@@ -17,7 +17,7 @@ describe("Redux", () => {
         return state;
     }
   };
-  const store = createStore(initialState, reducer);
+  const store = createStore(reducer, initialState);
 
   it("should update state predictable", () => {
     const noop = {
@@ -46,43 +46,8 @@ describe("Redux", () => {
     it("should use the same store after call `createStore` again", () => {
       const newInitialState = { test: "a" };
       const newReducer = () => {};
-      const newStore = createStore(newInitialState, newReducer);
+      const newStore = createStore(newReducer, newInitialState);
       expect(newStore).toEqual(store);
     });
-  });
-});
-
-describe("combineReducer", () => {
-  const initialState = { count: 0, fake: "" };
-  const reducer = (state, action) => {
-    switch (action.type) {
-      case "increase":
-        return { count: state.count + 1 };
-      case "increaseBy":
-        return { count: state.count + action.payload };
-      case "decrease":
-        return { count: state.count - 1 };
-      case "decreaseBy":
-        return { count: state.count - action.payload };
-      default:
-        return state;
-    }
-  };
-  const fakeReducer = (state, action) => {
-    switch (action.type) {
-      case "setFake":
-        console.log("setFake");
-        return { fake: action.payload };
-      default:
-        return state;
-    }
-  };
-  const rootReducer = combineReducers({ reducer, fake: fakeReducer });
-  const store = createStore(initialState, rootReducer);
-
-  it("should combine multiple reducers", () => {
-    store.dispatch({ type: "setFake", payload: "dispatched" });
-    const state = store.getState();
-    console.log(state);
   });
 });

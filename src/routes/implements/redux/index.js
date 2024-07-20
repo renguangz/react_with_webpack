@@ -1,31 +1,31 @@
 import React from "react";
-import { createStore } from "../../../utils";
+import { Link } from "react-router-dom";
+import { connect } from "react-redux";
 
-const initialState = { count: 0 };
-const reducer = (state, action) => {
-  switch (action.type) {
-    case "increase":
-      return { count: state.count + 1 };
-    case "increaseBy":
-      return { count: state.count + action.payload };
-    case "decrease":
-      return { count: state.count - 1 };
-    case "decreaseBy":
-      return { count: state.count - action.payload };
-    default:
-      return state;
-  }
-};
+function ReduxPage(props) {
+  const { counter, user, increase } = props;
 
-const store = createStore(initialState, reducer);
-store.subscribe((newState) =>
-  console.log(`State is changing ${newState.count}`),
-);
-
-export default function ReduxPage() {
   const handleClick = () => {
-    store.dispatch({ type: "increase" });
+    increase();
   };
 
-  return <h1 onClick={handleClick}>Hello Redux</h1>;
+  return (
+    <div>
+      <h1 onClick={handleClick}>Hello Redux</h1>
+      <span>Counter: {counter}</span>
+      <span>User Data: {user.data?.title ?? "No Data"}</span>
+      <Link to="/implements/redux/user">ReduxUserPage</Link>
+    </div>
+  );
 }
+
+const mapStateToProps = (state) => ({
+  user: state.user,
+  counter: state.counter,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  increase: () => dispatch({ type: "INCREASE" }),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReduxPage);

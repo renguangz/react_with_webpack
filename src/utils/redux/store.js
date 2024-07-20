@@ -1,7 +1,11 @@
 let storeInstance = null;
 
-export const createStore = (initialState, reducer) => {
+export const createStore = (reducer, initialState, enhancer) => {
   if (storeInstance) return storeInstance;
+
+  if (typeof enhancer === "function") {
+    return enhancer(createStore)(reducer, initialState);
+  }
 
   let state = initialState;
   const subscribers = new Set();
@@ -20,23 +24,10 @@ export const createStore = (initialState, reducer) => {
     };
   };
 
-  const applyMiddleware = (...middlewares) => {
-    middlewares = middlewares.slice();
-    middlewares.reverse();
-
-    middlewares.forEach((middleware) => {
-      dispatch = middleware({
-        getState,
-        dispatch: (action) => dispatch(action),
-      })(dispatch);
-    });
-  };
-
   storeInstance = {
     getState,
     dispatch,
     subscribe,
-    applyMiddleware,
   };
 
   return storeInstance;
